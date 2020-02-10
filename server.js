@@ -42,7 +42,14 @@ app.use(express.json());
 app.use(express.static("public"));
 
 //routes
-var index = require("./")
+var index = require("./routes/index");
+var articles = require("./routes/articles");
+var scrape = require("./routes/scrape");
+
+app.use("/", index);
+app.use("/articles", articles);
+app.use("/scrape", scrape);
+
 // initiate server
 app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");
