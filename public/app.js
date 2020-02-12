@@ -1,23 +1,23 @@
 $(document).ready(function () {
-
     //click event to scrape new articles
-    $('#scrape').on('click', function (e) {
-        console.log("scrape clicked")
-        $('#loader').css({ 'display': 'block' });
-        e.preventDefault();
+    $('#scrape').on('click', function () {
+        console.log("scrape clicked");
         $.ajax({
-            url: '/scrape/newArticles',
+            url: '/scrape',
             type: 'GET',
-            success: function (response) {
-                $('#numArticles').text(response.count);
-            },
-            error: function (error) {
-                showErrorModal(error);
-            },
-            complete: function (result) {
-                $('#loader').css({ 'display': 'none' });
-            }
+        }).done(function (data) {
+            window.location = "/"
         });
     });
 
+    //save articles
+    $(".save").on("click", function () {
+        var thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/articles/save/" + thisId
+        }).done(function (data) {
+            window.location = "/"
+        })
+    });
 });
