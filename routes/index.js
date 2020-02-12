@@ -1,6 +1,6 @@
 //Dependencies
-var express = require('express');
-var router = express.Router();
+var router = require('express').Router();
+//var router = requireexpress.Router();
 var db = require("../models");
 
 //get route to root, populating index.handlebars with articles
@@ -10,7 +10,8 @@ router.get('/', (req,res) => {
     .find({})
     .then(articles => {
       console.log(articles)
-      res.render('index', {articles})
+     //res.json(articles)
+    res.render('index', {items:articles})
     })
     .catch(err=> res.json(err));
 });

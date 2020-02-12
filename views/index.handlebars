@@ -6,7 +6,16 @@
   </nav>
 </header>
 <div class="filler"></div>
-<p>hellooooo</p>
+
+<div>
+
+{{#each items}}
+  <p>hello</p>
+{{items.storyUrl}}
+{{headline}}
+{{/each}}
+
+</div>
 {{!-- {{#each articles}}
 
 <figure class="storyPanel clearfix">
@@ -15,13 +24,11 @@
       <img src="{{imgUrl}}" alt="" class="storyImg" height="150">
     </div>
   </a>
-  {{#if articles.storyUrl}}
-  <a href="{{storyUrl}}" class="storyLink">
+  {{!-- {{#if articles.storyUrl}} --}}
+  {{!-- <a href="{{storyUrl}}" class="storyLink">
     <h2 class="storyHeadline">{{headline}}</h2>
-  </a>
-  {{else}}
-  <h3 class="storyHeadline">{{headline}}</h3>
+  </a> --}}
+  {{!-- {{else}}
+  <h3 class="storyHeadline">{{headline}}</h3> --}}
 
-</figure>
 
-{{/each}} --}}

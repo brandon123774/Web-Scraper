@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     //click event to scrape new articles
     $('#scrape').on('click', function (e) {
+        console.log("scrape clicked")
         $('#loader').css({ 'display': 'block' });
         e.preventDefault();
         $.ajax({

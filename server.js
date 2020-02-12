@@ -1,6 +1,6 @@
 //dependencies
 var express = require("express");
-var exphbs = require('express-handlebars');
+
 var mongoose = require("mongoose");
 var logger = require("morgan");
 //var handlebars = requiere("handlebars")
@@ -35,9 +35,11 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
-//setting up handlebars
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
+// Set Handlebars.
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 //port for localhost
 var PORT = 3000;
@@ -49,7 +51,7 @@ var index = require("./routes/index");
 var articles = require("./routes/articles");
 var scrape = require("./routes/scrape");
 
-app.use(index);
+app.use("/",index);
 app.use("/articles", articles);
 app.use("/scrape", scrape);
 
