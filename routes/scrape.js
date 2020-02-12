@@ -32,7 +32,7 @@ router.get("/newArticles", function (req, res) {
                 if (newArticle.storyUrl) {
                     //checking if new article matches any saved article, 
                     if (!savedHeadlines.includes(newArticle.headline)) {
-                        newArticleArr.push(newArticle);
+                        newArticleArray.push(newArticle);
                     }
                 }
             });

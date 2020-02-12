@@ -15,38 +15,6 @@ $(document).ready(function () {
             },
             complete: function (result) {
                 $('#loader').css({ 'display': 'none' });
-                $('#alertModal').modal('show');
-            }
-        });
-    });
-
-    //click event to save an article
-    $(document).on('click', '#saveArticle', function (e) {
-        let articleId = $(this).data('id');
-        $.ajax({
-            url: '/articles/save/' + articleId,
-            type: 'GET',
-            success: function (response) {
-                window.location.href = '/';
-            },
-            error: function (error) {
-                showErrorModal(error);
-            }
-        });
-    });
-
-    //click event to delete an article from savedArticles
-    $('.deleteArticle').on('click', function (e) {
-        e.preventDefault();
-        let id = $(this).data('id');
-        $.ajax({
-            url: '/articles/deleteArticle/' + id,
-            type: 'DELETE',
-            success: function (response) {
-                window.location.href = '/articles/viewSaved';
-            },
-            error: function (error) {
-                showErrorModal(error);
             }
         });
     });
