@@ -2,33 +2,20 @@
   <h1>Scraper App</h1>
   <nav class="button-group">
     <button class="button-dark" id="scrape">Scrape Articles</button>
-
   </nav>
 </header>
+
 <div class="filler"></div>
 
 <div>
 
 {{#each items}}
-  <p>hello</p>
+  {{!-- <p>hello</p> --}}
 {{items.storyUrl}}
 {{headline}}
 {{/each}}
 
 </div>
-{{!-- {{#each articles}}
 
-<figure class="storyPanel clearfix">
-  <a href="{{storyUrl}}" class="pull-right">
-    <div class="imgBox">
-      <img src="{{imgUrl}}" alt="" class="storyImg" height="150">
-    </div>
-  </a>
-  {{!-- {{#if articles.storyUrl}} --}}
-  {{!-- <a href="{{storyUrl}}" class="storyLink">
-    <h2 class="storyHeadline">{{headline}}</h2>
-  </a> --}}
-  {{!-- {{else}}
-  <h3 class="storyHeadline">{{headline}}</h3> --}}
 
 

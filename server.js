@@ -1,9 +1,8 @@
 //dependencies
 var express = require("express");
-
 var mongoose = require("mongoose");
 var logger = require("morgan");
-//var handlebars = requiere("handlebars")
+//var handlebars = require("handlebars")
 
 //web scraping tools
 var axios = require("axios");
