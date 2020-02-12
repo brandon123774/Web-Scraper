@@ -5,6 +5,7 @@ var db = require("../models");
 
 //get route to update
 router.get('/save/:id', (req,res) => {
+  console.log("article route")
   db.Article
     .update({_id: req.params.id},{saved: true})
     .then(result=> res.redirect('/'))

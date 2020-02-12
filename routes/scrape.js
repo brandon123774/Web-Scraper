@@ -7,6 +7,7 @@ var db = require('../models');
 //route to scrape new articles
 router.get("/newArticles", function (req, res) {
     //options
+    console.log("scrape route")
     var options = {
         uri: 'https://slate.com/technology',
         transform: function (body) {

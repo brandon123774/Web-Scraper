@@ -3,6 +3,7 @@ var express = require("express");
 var exphbs = require('express-handlebars');
 var mongoose = require("mongoose");
 var logger = require("morgan");
+//var handlebars = requiere("handlebars")
 
 //web scraping tools
 var axios = require("axios");
@@ -27,6 +28,12 @@ mongoose
 
 //morgan setup 
 app.use(logger('dev'));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Make public a static folder
+app.use(express.static("public"));
 
 //setting up handlebars
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -35,19 +42,14 @@ app.set('view engine', 'handlebars');
 //port for localhost
 var PORT = 3000;
 
-// Parse request body as JSON
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
-// Make public a static folder
-app.use(express.static("public"));
 
 //routes
 var index = require("./routes/index");
 var articles = require("./routes/articles");
 var scrape = require("./routes/scrape");
 
-app.use("/", index);
+app.use(index);
 app.use("/articles", articles);
 app.use("/scrape", scrape);
 
