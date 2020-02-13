@@ -14,16 +14,19 @@ var app = express();
 //db for models
 //var config = require("./config/db");
 var MONGODB_URI= process.env.MONGODB_URI || 'mongodb://localhost/scrapper'
-mongoose.Promise = Promise;
-mongoose
-    .connect(MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(result => {
-        console.log(`Database Connected: '${result.connections[0].name}' on ${result.connections[0].host}:${result.connections[0].port}`);
-    })
-    .catch(err => console.log('Connection error:', err));
+mongoose.connect(MONGODB_URI);
+
+
+// mongoose.Promise = Promise;
+// mongoose
+//     .connect(MONGODB_URI, {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true
+//     })
+//     .then(result => {
+//         console.log(`Database Connected: '${result.connections[0].name}' on ${result.connections[0].host}:${result.connections[0].port}`);
+//     })
+//     .catch(err => console.log('Connection error:', err));
 
 //morgan setup 
 app.use(logger('dev'));
