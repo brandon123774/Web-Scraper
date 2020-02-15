@@ -44,18 +44,21 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 //port for localhost
-var PORT = 3000;
+// var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 
 
 //routes
-var index = require("./routes/index");
-var articles = require("./routes/articles");
-var scrape = require("./routes/scrape");
+// var index = require("./routes/index");
+// var articles = require("./routes/articles");
+// var scrape = require("./routes/scrape");
+var allRoutes = require("./routes/allRoutes");
 
-app.use("/",index);
-app.use("/articles", articles);
-app.use("/scrape", scrape);
+app.use("/", allRoutes);
+// app.use("/",index);
+// app.use("/articles", articles);
+// app.use("/scrape", scrape);
 
 // initiate server
 app.listen(PORT, function () {
