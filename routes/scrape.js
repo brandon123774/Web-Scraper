@@ -35,7 +35,7 @@ axios.get(options.uri).then(function(response){
         console.log("--->",  $(element).find('img').attr('data-src'))
         var newArticle = new db.Article({
             storyUrl: $(element).attr("href"),
-            // storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
+            storyUrl: `https://www.slate.com/technology${$(element).find('a').attr('href')}`,
             headline: $(element).find('.topic-story__hed').text().trim(),
            // summary: $(element).find('p').text().trim(),
             imgUrl: $(element).find('img').attr('data-src'),
