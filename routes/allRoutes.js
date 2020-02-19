@@ -11,13 +11,40 @@ router.get('/', (req, res) => {
     db.Article
         .find({})
         .then(articles => {
-            console.log(articles)
+
+            //console.log(articles)
             //res.json(articles)
-            res.render('index', { items: articles })
+
+            let array = []
+            console.log("length:", articles.length)
+            console.log("0000",articles[0].headline)
+            for (var i = 0; i < articles.length; i++) {
+
+                let newArt = {
+                    new: "hi",
+                    storyURL: articles[i].storyURL
+                }
+                console.log(newArt)
+                array.push(newArt)
+            }
+            console.log(array)
+            res.render('index', { items: array })
+        })
+        .catch(err => console.log(err));
+});
+//get route to root, populating index.handlebars with articles
+router.get('/test', (req, res) => {
+    console.log("index route")
+    db.Article
+        .find({})
+        .then(articles => {
+
+            console.log(articles)
+            res.json(articles)
+            // res.render('index', { items: articles })
         })
         .catch(err => res.json(err));
 });
-
 //get route to update
 router.get('/save/:id', (req, res) => {
     console.log("article route")
