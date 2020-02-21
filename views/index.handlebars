@@ -7,19 +7,22 @@
 
   <nav class="button-group">
     <button class="button-dark" id="scrape">Scrape Article</button>
-    <button class="button-dark" data-id={{this._id}}>Save Article</button>
+     <button class="button-dark" id="savedarticles">Saved Article</button>
   </nav>
 </header>
 
 <div class="filler"></div>
 
 <div>
-<p>articles here</p>
-  {{#each items}}
-  <p>{{this.storyUrl}}</p>
-  {{!-- <p>hello</p> --}}
-  {{this.new}}
 
+  {{#each items}}
+    {{#unless saved}}
+
+      <p>{{this.title}}</p>
+      <p>{{this.link}}</p>
+      <button class="button-dark save" data-id={{this.id}}>Save Article</button>
+
+  {{/unless}}
   {{/each}}
 
 </div>

@@ -17,21 +17,47 @@ router.get('/', (req, res) => {
 
             let array = []
             console.log("length:", articles.length)
-            console.log("0000",articles[0].headline)
-            for (var i = 0; i < articles.length; i++) {
-
-                let newArt = {
-                    new: "hi",
-                    storyURL: articles[i].storyURL
+            let arrayArticles = articles.map(elem=>{
+                return {
+                    id: elem._id,
+                    title: elem.title,
+                    link: elem.link,
+                    saved: elem.saved
                 }
-                console.log(newArt)
-                array.push(newArt)
-            }
-            console.log(array)
-            res.render('index', { items: array })
+            })
+            console.log(articles)
+            res.render('index', { items: arrayArticles })
         })
         .catch(err => console.log(err));
 });
+
+//get route to root, populating index.handlebars with articles
+router.get('/saved', (req, res) => {
+    console.log("index route")
+    db.Article
+        .find({})
+        .then(articles => {
+
+            //console.log(articles)
+            //res.json(articles)
+
+            let array = []
+            console.log("length:", articles.length)
+            
+            let arrayArticles = articles.map(elem=>{
+                return {
+                    id: elem._id,
+                    title: elem.title,
+                    link: elem.link,
+                    saved: elem.saved
+                }
+            })
+            console.log(articles)
+            res.render('saved', { items: arrayArticles })
+        })
+        .catch(err => console.log(err));
+});
+
 //get route to root, populating index.handlebars with articles
 router.get('/test', (req, res) => {
     console.log("index route")
@@ -46,16 +72,16 @@ router.get('/test', (req, res) => {
         .catch(err => res.json(err));
 });
 //get route to update
-router.get('/save/:id', (req, res) => {
+router.put('/articles/save/:id', (req, res) => {
     console.log("article route")
     db.Article
-        .update({ _id: req.params.id }, { saved: true })
-        .then(result => res.redirect('/'))
+        .updateOne({ _id: req.params.id }, { saved: true })
+        .then(result => res.json(result))
         .catch(err => res.json(err));
 });
 
 //route to scrape new articles
-router.get("/newArticles", function (req, res) {
+router.get("/scrape", function (req, res) {
     //options
     console.log("scrape route")
     var options = {
@@ -75,15 +101,15 @@ router.get("/newArticles", function (req, res) {
             //console.log(element)
             console.log("--->", $(element).find('img').attr('data-src'))
             var newArticle = new db.Article({
-                storyUrl: $(element).attr("href"),
+                link: $(element).attr("href"),
                 // storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
-                headline: $(element).find('.topic-story__hed').text().trim(),
+                title: $(element).find('.topic-story__hed').text().trim(),
                 // summary: $(element).find('p').text().trim(),
-                imgUrl: $(element).find('img').attr('data-src'),
+                // imgUrl: $(element).find('img').attr('data-src'),
             });
             console.log(newArticle)
             //checking to make sure newArticle contains a storyUrl
-            if (newArticle.storyUrl) {
+            if (newArticle.link) {
                 //checking if new article matches any saved article, 
                 // if (!savedHeadlines.includes(newArticle.headline)) {
                 newArticleArray.push(newArticle);

@@ -6,13 +6,19 @@
   </div>
 </header>
 
+
 <div class="filler"></div>
 
 <div>
 
-  {{#each article}}
-  {{!-- <p>hello</p> --}}
-  {{this.storyUrl}}
-  {{this.headline}}
+  {{#each items}}
+    {{#if saved}}
+    
+      <p>{{this.title}}</p>
+      <p>{{this.link}}</p>
+      
+
+  {{/if}}
   {{/each}}
+
 </div>

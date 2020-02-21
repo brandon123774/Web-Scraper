@@ -15,7 +15,10 @@ var app = express();
 //db for models
 //var config = require("./config/db");
 var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/scrapper'
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
 
 
 // mongoose.Promise = Promise;

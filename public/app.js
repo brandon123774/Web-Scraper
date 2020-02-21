@@ -13,10 +13,21 @@ $('#scrape').on('click', function () {
 $(".save").on("click", function () {
     var thisId = $(this).attr("data-id");
     $.ajax({
-        method: "POST",
+        method: "PUT",
         url: "/articles/save/" + thisId
     }).done(function (data) {
-        window.location = "/"
+        window.location.reload()
     })
 });
 
+
+//save articles
+$("#savedarticles").on("click", function () {
+
+    $.ajax({
+        method: "GET",
+        url: "/saved/" 
+    }).done(function (data) {
+        document.write(data)
+    })
+});
