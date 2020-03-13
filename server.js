@@ -46,70 +46,90 @@ app.set("view engine", "handlebars");
 //db setup
 //var config = require("./config/db");
 var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/scrapper'
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+mongoose.connect(MONGODB_URI)
+//     {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
 
 
 //routes stuff
-app.get("/", function(req, res){
-    db.Article.find({"saved": false}).then(function(result){
-        // This variable allows us to use handlebars by passing the results 
-        // from the database as the value in an object
+app.get("/", function (req, res) {
+    db.Article.find({ "saved": false }).then(function (result) {
         var hbsObject = { articles: result };
-        res.render("index",hbsObject);
-    }).catch(function(err){ res.json(err) });
+        res.render("index", hbsObject);
+    }).catch(function (err) { res.json(err) });
 });
 
-// Scrapes tfrom slate.com
-app.get("/scraped", function(req, res) {
-    axios.get("https://www.slate.com/technology").then(function(response) {
+// Scrapes from slate.com
+app.get("/scraped", function (req, res) {
+    axios.get("https://www.slate.com/technology").then(function (response) {
 
-      var $ = cheerio.load(response.data);
-
-      $(".topic-story__hed").each(function(i, element) {
-        var result = {};
-
-        result.title = $(element).text();
-    
-        result.link = $(element).children("a").attr("href");
-
-        result.summary = $(element).siblings(".entry-summary").text().trim();
-    
-        db.Article.create(result)
-        .then(function(dbArticle) {
-          console.log(dbArticle);
-        })
-        .catch(function(err) {
-          console.log(err);
+        var $ = cheerio.load(response.data);
+        //iterating over returned articles, and creating a newArticle object from the data
+        $('.topic-story').each((i, element) => {
+            //console.log(element)
+            console.log("--->", $(element).find('img').attr('data-src'))
+            var newArticle = new db.Article({
+                link: $(element).attr("href"),
+                // storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
+                title: $(element).find('.topic-story__hed').text().trim(),
+                // summary: $(element).find('p').text().trim(),
+                // imgUrl: $(element).find('img').attr('data-src'),
+            });
+            console.log(newArticle)
+            //checking to make sure newArticle contains a storyUrl
+            if (newArticle.link) {
+                //checking if new article matches any saved article, 
+                // if (!savedHeadlines.includes(newArticle.headline)) {
+                newArticleArray.push(newArticle);
+                // }
+            }
         });
-      });
-});
-res.send("Scrape Finished");
-});
 
-// Displays any saved articles
-app.get("/saved", function(req, res) {
-    db.Article.find({"saved": true})
-        .populate("notes")
-        .then(function(result){
-        var hbsObject = { articles: result };
-        res.render("saved",hbsObject);
-    }).catch(function(err){ res.json(err) });
-});
+        //       $(".topic-story__hed").each(function(i, element) {
+        //         var result = {};
 
-// Posts any of the saved articles 
-app.post("/saved/:id", function(req, res) {
-    db.Article.findOneAndUpdate({"_id": req.params.id}, {"$set": {"saved": true}})
-    .then(function(result) {
-        res.json(result);
-    }).catch(function(err){ res.json(err) });
-})
+        //         result.title = $(element).text();
 
-// initiate server
-app.listen(PORT, function () {
-    console.log("App running on port " + PORT + "!");
+        //         result.link = $(element).children("a").attr("href");
+
+        //         result.summary = $(element).siblings(".entry-summary").text().trim();
+
+        //         db.Article.create(result)
+        //         .then(function(dbArticle) {
+        //           console.log(dbArticle);
+        //         })
+        //         .catch(function(err) {
+        //           console.log(err);
+        //         });
+        //       });
+        // });
+
+        res.send("Scrape Finished");
+    });
+
+    // Displays any saved articles
+    app.get("/saved", function (req, res) {
+        db.Article.find({ "saved": true })
+            .then(function (result) {
+                var hbsObject = { articles: result };
+                res.render("saved", hbsObject);
+            }).catch(function (err) { res.json(err) });
+    });
+
+    // Posts any of the saved articles 
+    app.post("/saved/:id", function (req, res) {
+        db.Article.findOneAndUpdate({ "_id": req.params.id }, { "$set": { "saved": true } })
+            .then(function (result) {
+                res.json(result);
+            }).catch(function (err) { res.json(err) });
+    });
+
+    // initiate server
+    app.listen(PORT, function () {
+        console.log("App running on port " + PORT + "!");
+    });
 });
 
 // mongoose.Promise = Promise;

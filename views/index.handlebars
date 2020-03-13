@@ -13,7 +13,14 @@
 
 <div class="filler"></div>
 
-<div>
+{{! Articles }}
+<div id="articles">
+    {{#each articles}}
+        {{> article }}
+    {{/each}}
+</div>
+
+{{!-- <div>
 
   {{#each items}}
     {{#unless saved}}
@@ -25,4 +32,4 @@
   {{/unless}}
   {{/each}}
 
-</div>
+</div> --}}

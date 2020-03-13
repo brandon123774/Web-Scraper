@@ -14,7 +14,14 @@
 
 <div class="filler"></div>
 
-<div>
+{{! Articles }}
+<div id="articles">
+    {{#each articles}}
+        {{> saved-article }}
+    {{/each}}
+</div>
+
+{{!-- <div>
 
   {{#each items}}
     {{#if saved}}
@@ -26,4 +33,4 @@
   {{/if}}
   {{/each}}
 
-</div>
+</div> --}}
