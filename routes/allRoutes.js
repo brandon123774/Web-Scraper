@@ -4,6 +4,8 @@ var router = express.Router();
 var db = require("../models");
 var axios = require("axios");
 var cheerio = require('cheerio');
+var app = express();
+
 
 //get route to root, populating index.handlebars with articles
 router.get('/', (req, res) => {
@@ -31,7 +33,7 @@ router.get('/', (req, res) => {
         .catch(err => console.log(err));
 });
 
-//get route to root, populating index.handlebars with articles
+//get route to root, populating saved.handlebars with articles
 router.get('/saved', (req, res) => {
     console.log("index route")
     db.Article
@@ -58,7 +60,7 @@ router.get('/saved', (req, res) => {
         .catch(err => console.log(err));
 });
 
-//get route to root, populating index.handlebars with articles
+//test to see if articles are scraped
 router.get('/test', (req, res) => {
     console.log("index route")
     db.Article
@@ -81,6 +83,7 @@ router.put('/articles/save/:id', (req, res) => {
 });
 
 //route to scrape new articles
+
 router.get("/scrape", function (req, res) {
     //options
     console.log("scrape route")

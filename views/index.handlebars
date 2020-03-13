@@ -6,8 +6,9 @@
   </div>
 
   <nav class="button-group">
-    <button class="button-dark" id="scrape">Scrape Article</button>
-     <button class="button-dark" id="savedarticles">Saved Article</button>
+    <button class="button-dark" id="scrape">Home</button>
+    <button class="button-dark" id="scrape">Scrape Articles</button>
+    <button class="button-dark" id="savedarticles">Saved Article</button>
   </nav>
 </header>
 
@@ -16,11 +17,11 @@
 <div>
 
   {{#each items}}
-    {{#unless saved}}
+  {{#unless saved}}
 
-      <p>{{this.title}}</p>
-      <p>{{this.link}}</p>
-      <button class="button-dark save" data-id={{this.id}}>Save Article</button>
+  <p>{{this.title}}</p>
+  <p>{{this.link}}</p>
+  <button class="button-dark save" data-id={{this.id}}>Save Article</button>
 
   {{/unless}}
   {{/each}}

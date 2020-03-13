@@ -4,11 +4,11 @@
       <h1>Scraper App</h1>
       <h2>Saved Articles</h2>
     </div>
-  </div>
 
   <nav class="button-group">
-    <button class="button-dark" id="scrape">Scrape Article</button>
-     <button class="button-dark" id="savedarticles">Saved Article</button>
+    <button class="button-dark" id="scrape">Home</button>
+    <button class="button-dark" id="scrape">Scrape Articles</button>
+    <button class="button-dark" id="savedarticles">Saved Article</button>
   </nav>
 </header>
 
@@ -18,11 +18,11 @@
 <div>
 
   {{#each items}}
-    {{#if saved}}
-    
-      <p>{{this.title}}</p>
-      <p>{{this.link}}</p>
-      
+  {{#if saved}}
+
+  <p>{{this.title}}</p>
+  <p>{{this.link}}</p>
+
 
   {{/if}}
   {{/each}}

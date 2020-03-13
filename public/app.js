@@ -21,7 +21,7 @@ $(".save").on("click", function () {
 });
 
 
-//save articles
+//saved articles page
 $("#savedarticles").on("click", function () {
 
     $.ajax({
@@ -29,5 +29,16 @@ $("#savedarticles").on("click", function () {
         url: "/saved/" 
     }).done(function (data) {
         document.write(data)
+    })
+});
+
+//delete from saved page
+$(".delete").on("click", function() {
+    var thisId = $(this).attr("data-id");
+    $.ajax({
+        method: "POST",
+        url: "/delete/" + thisId
+    }).then(function(data) {
+        window.location = "/"
     })
 });
