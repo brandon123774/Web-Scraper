@@ -33,7 +33,6 @@ axios.get(options.uri).then(function(response){
     $('.topic-story').each((i, element) => {
         //console.log(element)
         console.log("--->",  $(element).find('img').attr('data-src'))
-        
         var newArticle = new db.Article({
             storyUrl: $(element).attr("href"),
             storyUrl: `https://www.slate.com/technology${$(element).find('a').attr('href')}`,

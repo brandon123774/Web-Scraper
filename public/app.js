@@ -1,9 +1,9 @@
 //click event to scrape new articles
-$('#scrape').on("click", function () {
+$('#scrape').on('click', function () {
     console.log("scrape clicked");
     $.ajax({
         method: 'GET',
-        url: '/scraped',
+        url: '/scrape',
     }).done(function (data) {
         window.location = "/"
     })
@@ -13,32 +13,21 @@ $('#scrape').on("click", function () {
 $(".save").on("click", function () {
     var thisId = $(this).attr("data-id");
     $.ajax({
-        method: "POST",
-        url: "saved/" + thisId
+        method: "PUT",
+        url: "/articles/save/" + thisId
     }).done(function (data) {
         window.location.reload()
     })
 });
 
-// delete button for saved
-$(".delete").on("click", function() {
-    var thisId = $(this).attr("data-id");
+
+//save articles
+$("#savedarticles").on("click", function () {
+
     $.ajax({
-        method: "POST",
-        url: "/delete/" + thisId
-    }).then(function(data) {
-        window.location = "/"
+        method: "GET",
+        url: "/saved/" 
+    }).done(function (data) {
+        document.write(data)
     })
 });
-
-
-// //save articles
-// $("#savedarticles").on("click", function () {
-
-//     $.ajax({
-//         method: "GET",
-//         url: "/saved/" 
-//     }).done(function (data) {
-//         document.write(data)
-//     })
-// });

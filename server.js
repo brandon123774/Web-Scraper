@@ -1,179 +1,25 @@
 //dependencies
 var express = require("express");
 var mongoose = require("mongoose");
-var expressHandlebars = require("express-handlebars");
-var bodyParser = require("body-parser");
+var logger = require("morgan");
+//var handlebars = require("handlebars")
 
-// var logger = require("morgan");
-// var path = require("path");
+//web scraping tools
+var axios = require("axios");
+var cheerio = require("cheerio");
+var request = require("request");
 
-// //web scraping tools
-// var axios = require("axios");
-// var cheerio = require("cheerio");
-
-// Requiring all models
-// var db = require("./models");
-
-//port for localhost
-var PORT = process.env.PORT || 3000;
-
-// initialize Express
+//initialize the application
 var app = express();
 
-var router = express.Router();
-require("./routes/allRoutes")
+//db for models
+//var config = require("./config/db");
+var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/scrapper'
+mongoose.connect(MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
 
-app.use(express.static(__dirname + "/public"));
-
-//handlebars
-app.engine("handlebars", expressHandlebars({
-    defaultLayout: "main"
-  }));
-  app.set("view engine", "handlebars");
-
-  //use body parser
-  app.use(bodyParser.urlencoded({
-    extended: false
-  }));
-
-  //use the router
-  app.use(router);
-
-  //db connection
-  var db = process.env.MONGODB_URI || 'mongodb://localhost/scrapper';
-
-  mongoose.connect(db, function(error) {
- 
-    if (error) {
-     console.log(error);
-   }
-  
-   else {
-     console.log("mongoose connection is successful");
-   }
- });
- 
- //initialize server
- app.listen(PORT, function() {
-   console.log("Listening on port:" + PORT);
- });
-
-// //morgan setup 
-// app.use(logger("dev"));
-
-// // Parse request body as JSON
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-
-// // Make public a static folder
-// app.use(express.static("public"));
-
-// // Parse request body as JSON
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-
-// // Set Handlebars
-// var exphbs = require("express-handlebars");
-// app.engine("handlebars", exphbs({
-//     defaultLayout: "main",
-//     partialsDir: path.join(__dirname, "/views/layouts/partials")
-// }));
-// app.set("view engine", "handlebars");
-
-
-// //db setup
-// // var config = require("./config/db");
-// var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/scrapper'
-// mongoose.connect(MONGODB_URI)
-
-// db.mongoConnect = () => {
-//     mongoose.Promise = global.Promise
-//     mongoose.connect('mongodb://localhost/scrapper', { useNewUrlParser: true });
-
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true
-//     });
-
-
-//     // //routes stuff
-//     app.get("/", function (req, res) {
-//         db.Article.find({ "saved": false }).then(function (result) {
-//             var hbsObject = { articles: result };
-//             res.render("index", hbsObject);
-//         }).catch(function (err) { res.json(err) });
-//     });
-
-//     // Scrapes from slate.com
-//     app.get("/scraped", function (req, res) {
-//         axios.get("https://www.slate.com/technology").then(function (response) {
-
-//             var $ = cheerio.load(response.data);
-//             //iterating over returned articles, and creating a newArticle object from the data
-//             $('.topic-story').each((i, element) => {
-//                 //console.log(element)
-//                 console.log("--->", $(element).find('img').attr('data-src'))
-//                 var newArticle = new db.Article({
-//                     link: $(element).attr("href"),
-//                     // storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
-//                     title: $(element).find('.topic-story__hed').text().trim(),
-//                     // summary: $(element).find('p').text().trim(),
-//                     // imgUrl: $(element).find('img').attr('data-src'),
-//                 });
-//                 console.log(newArticle)
-//                 //checking to make sure newArticle contains a storyUrl
-//                 if (newArticle.link) {
-//                     //checking if new article matches any saved article, 
-//                     // if (!savedHeadlines.includes(newArticle.headline)) {
-//                     newArticleArray.push(newArticle);
-//                     // }
-//                 }
-//             });
-
-//             //       $(".topic-story__hed").each(function(i, element) {
-//             //         var result = {};
-
-//             //         result.title = $(element).text();
-
-//             //         result.link = $(element).children("a").attr("href");
-
-//             //         result.summary = $(element).siblings(".entry-summary").text().trim();
-
-//             //         db.Article.create(result)
-//             //         .then(function(dbArticle) {
-//             //           console.log(dbArticle);
-//             //         })
-//             //         .catch(function(err) {
-//             //           console.log(err);
-//             //         });
-//             //       });
-//             // });
-
-//             res.send("Scrape Finished");
-//         });
-
-//         // Displays any saved articles
-//         app.get("/saved", function (req, res) {
-//             db.Article.find({ "saved": true })
-//                 .then(function (result) {
-//                     var hbsObject = { articles: result };
-//                     res.render("saved", hbsObject);
-//                 }).catch(function (err) { res.json(err) });
-//         });
-
-//         // Posts any of the saved articles 
-//         app.post("/saved/:id", function (req, res) {
-//             db.Article.findOneAndUpdate({ "_id": req.params.id }, { "$set": { "saved": true } })
-//                 .then(function (result) {
-//                     res.json(result);
-//                 }).catch(function (err) { res.json(err) });
-//         });
-
-        // initiate server
-    //     app.listen(PORT, function () {
-    //         console.log("App running on port " + PORT + "!");
-    //     });
-    // }
-    // );
 
 // mongoose.Promise = Promise;
 // mongoose
@@ -186,12 +32,35 @@ app.engine("handlebars", expressHandlebars({
 //     })
 //     .catch(err => console.log('Connection error:', err));
 
+//morgan setup 
+app.use(logger('dev'));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Make public a static folder
+app.use(express.static("public"));
+
+// Set Handlebars.
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+//port for localhost
+// var PORT = 3000;
+var PORT = process.env.PORT || 3000;
+
+
+
 //routes
 
 // var index = require("./routes/index");
 // var articles = require("./routes/articles");
 // var scrape = require("./routes/scrape");
+var allRoutes = require("./routes/allRoutes");
 
+app.use("/", allRoutes);
 // app.use("/",index);
 // app.use("/articles", articles);
 // app.use("/scrape", scrape);
@@ -212,7 +81,7 @@ app.engine("handlebars", expressHandlebars({
 // app.get('/scrape', function (req, res) {
 //     request('http://www.slate.com/technology', function (err, res, html) {
 //         var $ = cheerio.load(html);
-
+    
 //         $('article h3').each(function (i, element) {
 //             console.log(element)
 //             let result = {};
@@ -290,3 +159,7 @@ app.engine("handlebars", expressHandlebars({
 // });
 
 
+// initiate server
+app.listen(PORT, function () {
+    console.log("App running on port " + PORT + "!");
+});
