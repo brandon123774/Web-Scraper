@@ -102,18 +102,17 @@ router.get("/scrape", function (req, res) {
             console.log("--->", $(element).find('img').attr('data-src'))
             var newArticle = new db.Article({
                 link: $(element).attr("href"),
-                // storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
+                storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
                 title: $(element).find('.topic-story__hed').text().trim(),
-                // summary: $(element).find('p').text().trim(),
-                // imgUrl: $(element).find('img').attr('data-src'),
+                summary: $(element).find('p').text().trim(),
+                imgUrl: $(element).find('img').attr('data-src'),
             });
             console.log(newArticle)
+            
             //checking to make sure newArticle contains a storyUrl
             if (newArticle.link) {
-                //checking if new article matches any saved article, 
-                // if (!savedHeadlines.includes(newArticle.headline)) {
                 newArticleArray.push(newArticle);
-                // }
+                
             }
         });
 
