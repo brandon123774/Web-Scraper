@@ -1,21 +1,43 @@
-<header class="header">
-  <div class="col-md-12 jumbotron">
-    <div class="text-center">
-      <h1>Scraper App</h1>
-      <h2>Saved Articles</h2>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Scraper App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/">Home
+                <span class="sr-only">(current)</span>
+            </a>
+            <a class="nav-item nav-link" href="/saved">Saved Articles</a>
+            <a href="/scrape" class="btn btn-danger active" role="button" aria-pressed="true">Scrape Articles</a>
+        </div>
     </div>
-
-    <nav class="button-group">
-      <button class="button-dark" id="scrape">Home</button>
-      <button class="button-dark" id="scrape">Scrape Articles</button>
-      <button class="button-dark" id="savedarticles">Saved Article</button>
-    </nav>
-</header>
+</nav>
 
 
 <div class="filler"></div>
 
-<div>
+<div class=row>
+        <div class="col-12">
+            {{#each articles}}
+                <div class="card w-90">
+                    <div class="card-header text-white bg-primary">
+                        <a href={{link}} target="_blank" class="text-white">
+                            <h2>{{title}}</h2>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            {{summary}}
+                        </p>
+                        <button data="{{_id}}" class="btn btn-danger delete-btn">Delete From Saved</button>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+{{!-- <div>
 
   {{#each items}}
   {{#if saved}}
@@ -27,4 +49,4 @@
   {{/if}}
   {{/each}}
 
-</div>
+</div> --}}

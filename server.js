@@ -1,62 +1,47 @@
-//dependencies
+// Dependencies
 var express = require("express");
+var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-var logger = require("morgan");
-var path = require("path");
-//var handlebars = require("handlebars")
+// var request = require("request");
+// var cheerio = require("cheerio");
 
-//web scraping tools
-var axios = require("axios");
-var cheerio = require("cheerio");
-var request = require("request");
+//model
+var db = require("./models");
 
-//initialize the application
+// connection
+var PORT = process.env.PORT || process.argv[2] || 3000;
+
+// Initialize Express
 var app = express();
 
+// Use body-parser 
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Handlebars
+var exphbs = require("express-handlebars");
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+// Use express.static 
+app.use(express.static("public"));
+
+// route
+var router = require("./routes/route");
+app.use(router);
+
+// Connect to the Mongo DB
 //db for models
 var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/scrapper'
 mongoose.connect(MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
-//morgan setup 
-app.use(logger('dev'));
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
-// Parse request body as JSON
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Make public a static folder
-app.use(express.static("public"));
-
-// Set Handlebars.
-var exphbs = require("express-handlebars");
-app.engine("handlebars", exphbs({
-    defaultLayout: "main",
-    partialsDir: path.join(__dirname, "/views/layouts/partials")
-}));
-app.set("view engine", "handlebars");
-// app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-// app.set("view engine", "handlebars");
-
-//port for localhost
-// var PORT = 3000;
-var PORT = process.env.PORT || 3000;
-
-//routes
-
-var index = require("./routes/index");
-// var articles = require("./routes/articles");
-// var scrape = require("./routes/scrape");
-var allRoutes = require("./routes/allRoutes");
-
-app.use("/", allRoutes);
-app.use("/",index);
-// app.use("/articles", articles);
-// app.use("/scrape", scrape);
-
-// initiate server
+// Start the server
 app.listen(PORT, function () {
-    console.log("App running on port " + PORT + "!");
+    console.log(`This application is running on port: ${PORT}`);
 });

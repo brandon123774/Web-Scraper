@@ -13,6 +13,18 @@ var articleSchema = new Schema({
   saved: {
     type: Boolean,
     default: false
+  },
+  summary: {
+    type: String,
+    required: false,
+    unique: false
+  },
+
+  byline: {
+    type: String,
+    required: false,
+    unique: false
+  
     // summary: String,
     // storyUrl: String,
     // imgUrl: String,
