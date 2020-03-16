@@ -1,131 +1,132 @@
-var express = require("express");
+//Dependencies
+var express = require('express');
 var router = express.Router();
 var db = require("../models");
-var request = require("request"); 
-var cheerio = require("cheerio");
- 
-// A GET route for slate/technology
-router.get("/scrape", (req, res) => {
+var axios = require("axios");
+var cheerio = require('cheerio');
+var app = express();
+
+
+//get route to root, populating index.handlebars with articles
+router.get('/', (req, res) => {
     console.log("index route")
-    request("https://www.slate.com/technology", (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-            // cheerio
-            var $ = cheerio.load(body);
-            var count = 0;
-            // grab articles
-            $('.topic-story').each(function (i, element) {
-                // Save an empty result object
-                let count = i;
-                let result = {};
-                // Add the wanted info elements
-                result.title = $(element)
-                    .children('.topic-story')
-                    // .children('a')
-                    .text().trim();
-                result.link = $(element)
-                    .children('.topic-story')
-                    .children('a')
-                    .attr("href");
-                // result.summary = $(element)
-                //     .children('p')
-                //     .text().trim()
-                //     || $(element)
-                //         .children('ul')
-                //         .text().trim();
-                
-                if (result.title && result.link && result.summary){
-                    // Create a new Article using the `result` object built from scraping, but only if both values are present
-                    db.Article.create(result)
-                        .then(function (dbArticle) {
-                            // View the added result in the console
-                            count++;
-                        })
-                        .catch(function (err) {
-                            // If an error occurred, send it to the client
-                            return res.json(err);
-                        });
-                };
+    db.Article
+        .find({})
+        .then(articles => {
+
+            //console.log(articles)
+            //res.json(articles)
+
+            var array = []
+            console.log("length:", articles.length)
+            var arrayArticles = articles.map(elem=>{
+                return {
+                    id: elem._id,
+                    title: elem.title,
+                    link: elem.link,
+                    saved: elem.saved
+                }
+            })
+            console.log(articles)
+            res.render('index', { items: arrayArticles })
+        })
+        .catch(err => console.log(err));
+});
+
+//get route to root, populating saved.handlebars with articles
+router.get('/saved', (req, res) => {
+    console.log("index route")
+    db.Article
+        .find({})
+        .then(articles => {
+
+            //console.log(articles)
+            //res.json(articles)
+
+            var array = []
+            console.log("length:", articles.length)
+            
+            var arrayArticles = articles.map(elem=>{
+                return {
+                    id: elem._id,
+                    title: elem.title,
+                    link: elem.link,
+                    saved: elem.saved
+                }
+            })
+            console.log(articles)
+            res.render('saved', { items: arrayArticles })
+        })
+        .catch(err => console.log(err));
+});
+
+//test to see if articles are scraped
+router.get('/test', (req, res) => {
+    console.log("index route")
+    db.Article
+        .find({})
+        .then(articles => {
+
+            console.log(articles)
+            res.json(articles)
+            // res.render('index', { items: articles })
+        })
+        .catch(err => res.json(err));
+});
+//get route to update
+router.put('/articles/save/:id', (req, res) => {
+    console.log("article route")
+    db.Article
+        .updateOne({ _id: req.params.id }, { saved: true })
+        .then(result => res.json(result))
+        .catch(err => res.json(err));
+});
+
+//route to scrape new articles
+
+router.get("/scrape", function (req, res) {
+    //options
+    console.log("scrape route")
+    var options = {
+        uri: 'https://slate.com/technology',
+        transform: function (body) {
+            return cheerio.load(body);
+        }
+    };
+    axios.get(options.uri).then(function (response) {
+        // console.log(response.data)
+        var $ = cheerio.load(response.data)
+
+        var newArticleArray = []
+
+        //iterating over returned articles, and creating a newArticle object from the data
+        $('.topic-story').each((i, element) => {
+            //console.log(element)
+            console.log("--->", $(element).find('img').attr('data-src'))
+            var newArticle = new db.Article({
+                link: $(element).attr("href"),
+                storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
+                title: $(element).find('.topic-story__hed').text().trim(),
+                summary: $(element).find('p').text().trim(),
+                imgUrl: $(element).find('img').attr('data-src'),
             });
-            // If we were able to successfully scrape and save an Article, redirect to index
-            res.redirect('/')
-        }
-        else if (error || response.statusCode != 200){
-            res.send("Error: Unable to obtain new articles")
-        }
-    });
-});
-
-router.get("/", (req, res) => {
-    db.Article.find({})
-        .then(function (dbArticle) {
-            // If we were able to successfully find Articles, send them back to the client
-            var retrievedArticles = dbArticle;
-            var hbsObject;
-            hbsObject = {
-                articles: dbArticle
-            };
-            res.render("index", hbsObject);        
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
+            console.log(newArticle)
+            
+            //checking to make sure newArticle contains a storyUrl
+            if (newArticle.link) {
+                newArticleArray.push(newArticle);
+                
+            }
         });
+
+        //adding all new articles to database
+        console.log(newArticleArray)
+        db.Article
+            .create(newArticleArray)
+            .then(result => res.json({ count: newArticleArray.length }))//returning count of new articles to front end
+            .catch(err => { });
+
+    })
+
 });
-
-router.get("/saved", (req, res) => {
-    db.Article.find({isSaved: true})
-        .then(function (retrievedArticles) {
-            // If we were able to successfully find Articles, send them back to the client
-            var hbsObject;
-            hbsObject = {
-                articles: retrievedArticles
-            };
-            res.render("saved", hbsObject);
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
-        });
-});
-
-// Route for getting all Articles from the db
-router.get("/articles", function (req, res) {
-    // Grab every document in the Articles collection
-    db.Article.find({})
-        .then(function (dbArticle) {
-            // If we were able to successfully find Articles, send them back to the client
-            res.json(dbArticle);
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
-        });
-});
-
-router.put("/save/:id", function (req, res) {
-    db.Article.findOneAndUpdate({ _id: req.params.id }, { isSaved: true })
-        .then(function (data) {
-            // If we were able to successfully find Articles, send them back to the client
-            res.json(data);
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
-        });;
-});
-
-router.put("/remove/:id", function (req, res) {
-    db.Article.findOneAndUpdate({ _id: req.params.id }, { isSaved: false })
-        .then(function (data) {
-            // If we were able to successfully find Articles, send them back to the client
-            res.json(data)
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
-        });
-});
-
-
-
 module.exports = router;

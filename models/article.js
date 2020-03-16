@@ -18,12 +18,12 @@ var articleSchema = new Schema({
     type: String,
     required: false,
     unique: false
-  },
+  // },
 
-  byline: {
-    type: String,
-    required: false,
-    unique: false
+  // byline: {
+  //   type: String,
+  //   required: false,
+  //   unique: false
   
     // summary: String,
     // storyUrl: String,

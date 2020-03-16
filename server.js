@@ -26,7 +26,7 @@ app.set("view engine", "handlebars");
 app.use(express.static("public"));
 
 // route
-var router = require("./routes/route");
+var router = require("./routes/allRoutes");
 app.use(router);
 
 // Connect to the Mongo DB
