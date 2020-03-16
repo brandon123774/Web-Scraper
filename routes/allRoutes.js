@@ -6,7 +6,6 @@ var axios = require("axios");
 var cheerio = require('cheerio');
 var app = express();
 
-
 //get route to root, populating index.handlebars with articles
 router.get('/', (req, res) => {
     console.log("index route")
