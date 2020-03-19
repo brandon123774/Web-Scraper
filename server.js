@@ -58,9 +58,10 @@ var PORT = process.env.PORT || 3000;
 // var index = require("./routes/index");
 // var articles = require("./routes/articles");
 // var scrape = require("./routes/scrape");
-var allRoutes = require("./routes/allRoutes");
 
+var allRoutes = require("./routes/allRoutes");
 app.use("/", allRoutes);
+
 // app.use("/",index);
 // app.use("/articles", articles);
 // app.use("/scrape", scrape);
