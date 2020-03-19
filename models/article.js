@@ -6,33 +6,33 @@ var articleSchema = new Schema({
     type: String,
     required: true
   },
+  // summary: {
+  //   type: String,
+  // },
   link: {
     type: String,
     required: true
   },
+  // image: {
+  //   type: String,
+  // },
   saved: {
     type: Boolean,
     default: false
+
+ 
   },
   summary: {
     type: String,
     required: false,
     unique: false
-  // },
-
-  // byline: {
-  //   type: String,
-  //   required: false,
-  //   unique: false
-  
-    // summary: String,
-    // storyUrl: String,
-    // imgUrl: String,
-    // saved: {
-    //   type: Boolean,
-    //   default: false
-    // }
+ 
   }
+});
+articleSchema.index({
+  link: 1,
+},  {
+  unique: true,
 });
 
 var Article = mongoose.model('Article', articleSchema);
