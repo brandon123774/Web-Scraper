@@ -19,14 +19,14 @@ var articleSchema = new Schema({
   saved: {
     type: Boolean,
     default: false
-    
-    // summary: String,
-    // storyUrl: String,
-    // imgUrl: String,
-    // saved: {
-    //   type: Boolean,
-    //   default: false
-    // }
+
+ 
+  },
+  summary: {
+    type: String,
+    required: false,
+    unique: false
+ 
   }
 });
 articleSchema.index({

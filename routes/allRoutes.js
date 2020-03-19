@@ -18,7 +18,9 @@ router.get('/', (req, res) => {
 
             var array = []
             console.log("length:", articles.length)
+
             var arrayArticles = articles.map(elem=>{
+
                 return {
                     // id: elem._id,
                     title: elem.title,
@@ -27,14 +29,15 @@ router.get('/', (req, res) => {
                 }
             })
             console.log(articles)
-            res.render('index', { items: arrayArticles })
+            // console.log(arrayArticles)
+            res.render('index', { items: articles })
         })
         .catch(err => console.log(err));
 });
 
 //get route to root, populating saved.handlebars with articles
 router.get('/saved', (req, res) => {
-    console.log("index route")
+    console.log("saved route")
     db.Article
         .find({})
         .then(articles => {
@@ -44,8 +47,10 @@ router.get('/saved', (req, res) => {
 
             var array = []
             console.log("length:", articles.length)
+
             
             var arrayArticles = articles.map(elem=>{
+
                 return {
                     id: elem._id,
                     title: elem.title,
@@ -59,7 +64,9 @@ router.get('/saved', (req, res) => {
         .catch(err => console.log(err));
 });
 
+
 //test to see if articles are scraped
+
 router.get('/test', (req, res) => {
     console.log("index route")
     db.Article
@@ -70,14 +77,6 @@ router.get('/test', (req, res) => {
             res.json(articles)
             // res.render('index', { items: articles })
         })
-        .catch(err => res.json(err));
-});
-//get route to update
-router.put('/articles/save/:id', (req, res) => {
-    console.log("article route")
-    db.Article
-        .updateOne({ _id: req.params.id }, { saved: true })
-        .then(result => res.json(result))
         .catch(err => res.json(err));
 });
 
@@ -92,6 +91,7 @@ router.get("/scrape", function (req, res) {
             return cheerio.load(body);
         }
     };
+
     axios.get(options.uri).then(function (response) {
         // console.log(response.data)
         var $ = cheerio.load(response.data)
@@ -118,14 +118,18 @@ router.get("/scrape", function (req, res) {
             }
         });
 
-        //adding all new articles to database
-        console.log(newArticleArray)
-        db.Article
-            .create(newArticleArray)
-            .then(result => res.json({ count: newArticleArray.length }))//returning count of new articles to front end
-            .catch(err => { });
 
-    })
+                //adding all new articles to database
+                console.log(newArticleArray)
+                db.Article
+                    .create(newArticleArray)
+                    .then(result => res.json({ count: newArticleArray.length }))//returning count of new articles to front end
+                    .catch(err => { });
 
+            })
+
+        });
 });
-module.exports = router;
+
+
+    module.exports = router;

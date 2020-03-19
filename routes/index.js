@@ -1,6 +1,5 @@
 //Dependencies
 var router = require('express').Router();
-//var router = requireexpress.Router();
 var db = require("../models");
 
 //get route to root, populating index.handlebars with articles
