@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
             var array = []
             console.log("length:", articles.length)
 
-            var arrayArticles = articles.map(elem => {
+            var arrayArticles = articles.map(elem=>{
 
                 return {
                     // id: elem._id,
@@ -48,8 +48,8 @@ router.get('/saved', (req, res) => {
             var array = []
             console.log("length:", articles.length)
 
-
-            var arrayArticles = articles.map(elem => {
+            
+            var arrayArticles = articles.map(elem=>{
 
                 return {
                     id: elem._id,
@@ -110,6 +110,42 @@ router.get("/scrape", function (req, res) {
                 // imgUrl: $(element).find('img').attr('data-src'),
             });
             console.log(newArticle)
+            
+            //checking to make sure newArticle contains a storyUrl
+            if (newArticle.link) {
+                newArticleArray.push(newArticle);
+                
+            }
+        });
+
+
+                //adding all new articles to database
+                console.log(newArticleArray)
+                db.Article
+                    .create(newArticleArray)
+                    .then(result => res.json({ count: newArticleArray.length }))//returning count of new articles to front end
+                    .catch(err => { });
+
+            })
+
+    axios.get(options.uri).then(function (response) {
+        // console.log(response.data)
+        var $ = cheerio.load(response.data)
+
+        var newArticleArray = []
+
+        //iterating over returned articles, and creating a newArticle object from the data
+        $('.topic-story').each((i, element) => {
+            //console.log(element)
+            console.log("--->", $(element).find('img').attr('data-src'))
+            var newArticle = new db.Article({
+                link: $(element).attr("href"),
+                storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
+                title: $(element).find('.topic-story__hed').text().trim(),
+                // summary: $(element).find('p').text().trim(),
+                // imgUrl: $(element).find('img').attr('data-src'),
+            });
+            console.log(newArticle)
 
             //checking to make sure newArticle contains a storyUrl
             if (newArticle.link) {
@@ -131,5 +167,4 @@ router.get("/scrape", function (req, res) {
 });
 
 
-
-module.exports = router;
+    module.exports = router;
