@@ -6,16 +6,16 @@ var articleSchema = new Schema({
     type: String,
     required: true
   },
-  summary: {
-    type: String,
-  },
+  // summary: {
+  //   type: String,
+  // },
   link: {
     type: String,
     required: true
   },
-  image: {
-    type: String,
-  },
+  // image: {
+  //   type: String,
+  // },
   saved: {
     type: Boolean,
     default: false

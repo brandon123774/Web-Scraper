@@ -4,6 +4,7 @@ var router = express.Router();
 var db = require("../models");
 var axios = require("axios");
 var cheerio = require('cheerio');
+var app = express();
 
 //get route to root, populating index.handlebars with articles
 router.get('/', (req, res) => {
@@ -15,11 +16,11 @@ router.get('/', (req, res) => {
             //console.log(articles)
             //res.json(articles)
 
-            let array = []
+            var array = []
             console.log("length:", articles.length)
-            let arrayArticles = articles.map(elem=>{
+            var arrayArticles = articles.map(elem=>{
                 return {
-                    id: elem._id,
+                    // id: elem._id,
                     title: elem.title,
                     link: elem.link,
                     saved: elem.saved
@@ -31,7 +32,7 @@ router.get('/', (req, res) => {
         .catch(err => console.log(err));
 });
 
-//get route to root, populating index.handlebars with articles
+//get route to root, populating saved.handlebars with articles
 router.get('/saved', (req, res) => {
     console.log("index route")
     db.Article
@@ -41,10 +42,10 @@ router.get('/saved', (req, res) => {
             //console.log(articles)
             //res.json(articles)
 
-            let array = []
+            var array = []
             console.log("length:", articles.length)
             
-            let arrayArticles = articles.map(elem=>{
+            var arrayArticles = articles.map(elem=>{
                 return {
                     id: elem._id,
                     title: elem.title,
@@ -58,7 +59,7 @@ router.get('/saved', (req, res) => {
         .catch(err => console.log(err));
 });
 
-//get route to root, populating index.handlebars with articles
+//test to see if articles are scraped
 router.get('/test', (req, res) => {
     console.log("index route")
     db.Article
@@ -81,6 +82,7 @@ router.put('/articles/save/:id', (req, res) => {
 });
 
 //route to scrape new articles
+
 router.get("/scrape", function (req, res) {
     //options
     console.log("scrape route")
@@ -102,18 +104,17 @@ router.get("/scrape", function (req, res) {
             console.log("--->", $(element).find('img').attr('data-src'))
             var newArticle = new db.Article({
                 link: $(element).attr("href"),
-                // storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
+                storyUrl: `https://www.slate.com${$(element).find('a').attr('href')}`,
                 title: $(element).find('.topic-story__hed').text().trim(),
                 // summary: $(element).find('p').text().trim(),
                 // imgUrl: $(element).find('img').attr('data-src'),
             });
             console.log(newArticle)
+            
             //checking to make sure newArticle contains a storyUrl
             if (newArticle.link) {
-                //checking if new article matches any saved article, 
-                // if (!savedHeadlines.includes(newArticle.headline)) {
                 newArticleArray.push(newArticle);
-                // }
+                
             }
         });
 
